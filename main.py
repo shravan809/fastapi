@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from fastapi import FastAPI
 from typing import Optional
 from pydantic import BaseModel
@@ -41,3 +42,16 @@ class Blog(BaseModel):
 def create_blog(blog:Blog):
     
     return {'data':f'blog is created with title as {blog.title}'}
+=======
+from fastapi import FastAPI
+
+app=FastAPI()
+
+@app.get('/')
+async def fun():
+    return {'name':'shravan','age':27}
+
+@app.get('/items/')
+async def list_items():
+    return {"car":"Benz",'model':2018}
+>>>>>>> f2d2179ea9b6ef5bde189c4692b3086a3d38ee67
