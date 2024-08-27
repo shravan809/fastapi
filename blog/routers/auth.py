@@ -1,5 +1,6 @@
 from fastapi import APIRouter,Depends,HTTPException,status
 from .. import schemas,database,models
+from ..routers import JWTtoken
 from sqlalchemy.orm import Session
 from ..hashing import Hash
 from passlib.context import CryptContext
@@ -16,5 +17,9 @@ def login(request:schemas.Login,db:Session=Depends(database.get_db)):
 
     if not Hash.verify(user.password,request.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail='incorrect password')
-    return user
+    
+    
+    access_token = JWTtoken.create_access_token(data={"sub": user.email})
+    return {"access_token":access_token, "token_type":"bearer"}
+    
 
