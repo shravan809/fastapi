@@ -14,7 +14,7 @@ async def list_items():
 
 @app.get('/test')
 def list_model():
-    return{"message":"File added successfully"}
+    return{"message":"File added"}
 
 
 if __name__ == "__main__":
