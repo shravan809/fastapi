@@ -12,6 +12,10 @@ async def fun():
 async def list_items():
     return {"car":"Benz",'model':2018}
 
+@app.get('/test')
+def list_model():
+    return{"message":"File added successfully"}
+
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
