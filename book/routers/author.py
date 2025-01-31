@@ -10,7 +10,7 @@ router=APIRouter(
     tags=['author'])
 
 
-@router.post('/',status_code=status.HTTP_201_CREATED)
+@router.post('/create',status_code=status.HTTP_201_CREATED)
 def home(request:Author,db:Session=Depends(get_db)):
     new_blog=models.Author(name=request.name)
     db.add(new_blog)

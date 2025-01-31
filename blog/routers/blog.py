@@ -1,14 +1,26 @@
-from fastapi import APIRouter,Depends,status,Response,HTTPException
+from fastapi import APIRouter,Depends,status,Response,HTTPException,Request
 from ..schemas import Blog,ShowBlog
 from .. import models
 from ..database import get_db
 from sqlalchemy.orm import Session
 from typing import List
 
+def token_excluded(request: Request):
+    # Exclude the "/blog/get" route from the dependency
+    if request.url.path == "/blog/get":
+        return None
+    print("This is token dependency in action")
+    print('******************************')
+
 router=APIRouter(
     prefix='/blog',
-    tags=['Blog'])
+    tags=['Blog'], dependencies=[Depends(token_excluded)])
 
+
+@router.get('/get',response_model=List[ShowBlog])
+def all(db:Session=Depends(get_db)):
+    all_blog=db.query(models.Blog).all()
+    return all_blog
 
 @router.post('/',status_code=status.HTTP_201_CREATED)
 def home(request:Blog,db:Session=Depends(get_db)):
@@ -17,11 +29,6 @@ def home(request:Blog,db:Session=Depends(get_db)):
     db.commit()
     db.refresh(new_blog)
     return new_blog
-
-@router.get('/get',response_model=List[ShowBlog])
-def all(db:Session=Depends(get_db)):
-    all_blog=db.query(models.Blog).all()
-    return all_blog
 
 @router.get('/{id}',response_model=ShowBlog)
 def get_id(id,response:Response,db:Session=Depends(get_db)):
@@ -41,7 +48,6 @@ def delete_blog(id, db:Session=Depends(get_db)):
     blog.delete()
     db.commit()
     return 'done'
-
 
 @router.put('/{id}',status_code=status.HTTP_202_ACCEPTED)
 def update_blog(id,request:Blog,db:Session=Depends(get_db)):

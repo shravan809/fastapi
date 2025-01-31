@@ -10,7 +10,7 @@ router=APIRouter(
     tags=['book'])
 
 
-@router.post('/',status_code=status.HTTP_201_CREATED)
+@router.post('/create',status_code=status.HTTP_201_CREATED)
 def home(request:Book,db:Session=Depends(get_db)):
     new_blog=models.Book(name=request.name)
     db.add(new_blog)
@@ -48,6 +48,6 @@ def update_blog(id,request:Book,db:Session=Depends(get_db)):
     blog=db.query(models.Book).filter(models.Book.id==id)
     if not blog.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='not found')
-    blog.update({'title':'my title'})
+    blog.update(request.dict())
     db.commit()
     return 'updated'
